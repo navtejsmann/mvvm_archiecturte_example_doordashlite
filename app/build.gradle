@@ -5,18 +5,20 @@ project.ext {
     retrofit = "2.0.2"
     constraintLayout = "1.0.2"
     dagger_version = "2.16"
+    okhttp = "3.14.2"
 }
 
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    namespace 'com.navtej.doordashlite' // Add this line
+    compileSdkVersion 36
     buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "com.navtej.doordashlite"
-        minSdkVersion 19
-        targetSdkVersion 28
+        minSdkVersion 21
+        targetSdkVersion 36
         versionCode 1
         versionName "1.0"
     }
@@ -24,7 +26,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -48,7 +50,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$project.constraintlayout"
     implementation "androidx.legacy:legacy-support-v4:$project.support"
 
-    implementation 'com.github.bumptech.glide:glide:3.8.0'
+    implementation 'com.github.bumptech.glide:glide:5.0.5'
 
     // Arch
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$project.arch"
@@ -58,6 +60,8 @@ dependencies {
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$project.retrofit"
     implementation "com.squareup.retrofit2:converter-gson:$project.retrofit"
+    implementation "com.squareup.okhttp3:okhttp:$project.okhttp"
+    implementation "com.squareup.okhttp3:logging-interceptor:$project.okhttp"
 
     // Dagger
     annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_version"
@@ -66,7 +70,7 @@ dependencies {
     implementation "com.google.dagger:dagger-android:$project.dagger_version"
     implementation "com.google.dagger:dagger-android-support:$project.dagger_version"
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
