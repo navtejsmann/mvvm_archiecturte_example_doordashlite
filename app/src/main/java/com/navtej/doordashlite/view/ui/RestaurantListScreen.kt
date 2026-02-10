@@ -20,8 +20,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -37,7 +37,7 @@ fun RestaurantListScreen(
     onRestaurantClick: (RestaurantDetail) -> Unit,
     viewModel: RestaurantListViewModel = viewModel(factory = LocalViewModelFactory.current)
 ) {
-    val restaurants by viewModel.restaurantListObservable.collectAsState(initial = null)
+    val restaurants by viewModel.restaurantListObservable.observeAsState(initial = null)
     val isLoading = restaurants == null
 
     Box(
