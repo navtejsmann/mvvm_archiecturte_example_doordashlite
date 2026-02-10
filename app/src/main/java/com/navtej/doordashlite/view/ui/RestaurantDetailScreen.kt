@@ -1,6 +1,7 @@
 package com.navtej.doordashlite.view.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -23,11 +25,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -38,14 +40,13 @@ import com.navtej.doordashlite.viewmodel.RestaurantViewModel
 fun RestaurantDetailScreen(
     restaurantId: String,
     onBack: () -> Unit,
-    viewModel: RestaurantViewModel = viewModel()
+    viewModel: RestaurantViewModel = viewModel(factory = LocalViewModelFactory.current)
 ) {
     LaunchedEffect(restaurantId) {
         viewModel.setRestaurantId(restaurantId)
     }
 
-    val restaurant by viewModel.getObservableRestaurant().observeAsState()
-    val isLoading = restaurant == null
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -68,15 +69,17 @@ fun RestaurantDetailScreen(
                 .padding(paddingValues)
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            if (isLoading) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+            when (val state = uiState) {
+                is RestaurantViewModel.RestaurantDetailUiState.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                    }
                 }
-            } else {
-                restaurant?.let { detail ->
+                is RestaurantViewModel.RestaurantDetailUiState.Success -> {
+                    val detail = state.restaurant
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -109,6 +112,25 @@ fun RestaurantDetailScreen(
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.primary
                         )
+                    }
+                }
+                is RestaurantViewModel.RestaurantDetailUiState.Error -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = state.message,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(onClick = onBack) {
+                            Text("Go Back")
+                        }
                     }
                 }
             }

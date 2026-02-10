@@ -11,6 +11,7 @@ project.ext {
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
+apply plugin: 'kotlin-kapt'
 
 android {
     namespace 'com.navtej.doordashlite'
@@ -58,12 +59,16 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0'
 
     // Arch / Lifecycle
-    annotationProcessor "androidx.lifecycle:lifecycle-compiler:$project.arch"
+    kapt "androidx.lifecycle:lifecycle-compiler:$project.arch"
     implementation "androidx.lifecycle:lifecycle-runtime:$project.arch"
     implementation "androidx.lifecycle:lifecycle-extensions:$project.arch"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0"
     implementation "androidx.lifecycle:lifecycle-runtime-compose:2.7.0"
     implementation "androidx.compose.runtime:runtime-livedata"
+
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1"
 
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$project.retrofit"
@@ -72,8 +77,8 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$project.okhttp"
 
     // Dagger
-    annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_version"
-    annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
     implementation "com.google.dagger:dagger:$project.dagger_version"
     implementation "com.google.dagger:dagger-android:$project.dagger_version"
     implementation "com.google.dagger:dagger-android-support:$project.dagger_version"
@@ -95,5 +100,6 @@ dependencies {
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.3.0'
+    androidTestImplementation 'androidx.test:core-ktx:1.13.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
 }
